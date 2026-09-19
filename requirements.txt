@@ -2,3 +2,7 @@ pinecone
 python-dotenv
 google-genai
 pymupdf
+fastapi
+uvicorn
+streamlit
+requests

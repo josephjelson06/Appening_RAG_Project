@@ -51,3 +51,29 @@ python -m agentic_rag.ask "What are the capabilities of Agentic AI?"
 
 FastAPI endpoints and a Streamlit interface will be added after retrieval and
 generation behavior is stable.
+
+## Run the API
+
+```powershell
+$env:PYTHONPATH = "$(Get-Location)\src"
+python -m uvicorn agentic_rag.api:app --reload
+```
+
+Open Swagger at `http://127.0.0.1:8000/docs` and test:
+
+```text
+POST /retrieve
+POST /generate
+```
+
+## Run the Streamlit UI
+
+Start FastAPI first, then open a second terminal:
+
+```powershell
+$env:RAG_API_URL = "http://127.0.0.1:8000"
+streamlit run .\ui\streamlit_app.py
+```
+
+The UI calls FastAPI over HTTP and provides separate retrieval and generation
+tabs with source provenance and relevance scores.
