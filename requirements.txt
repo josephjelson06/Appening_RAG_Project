@@ -1,6 +1,7 @@
 pinecone
 python-dotenv
 google-genai
+groq
 pymupdf
 fastapi
 uvicorn

@@ -4,7 +4,7 @@ import os
 import sys
 
 from dotenv import load_dotenv
-from google import genai
+from groq import Groq
 
 from .retrieve import retrieve
 
@@ -51,14 +51,21 @@ Book excerpts:
 {format_context(results)}
 """
 
-    client = genai.Client(api_key=os.environ["GOOGLE_API_KEY"])
-    response = client.models.generate_content(
-        model=os.environ["GENERATION_MODEL"],
-        contents=prompt,
+    client = Groq(api_key=os.environ["GROQ_API_KEY"])
+    response = client.chat.completions.create(
+        model=os.environ.get("GENERATION_MODEL", "qwen/qwen3.8-27b"),
+        messages=[
+            {
+                "role": "system",
+                "content": "You are a precise book-grounded RAG assistant.",
+            },
+            {"role": "user", "content": prompt},
+        ],
+        temperature=0.1,
     )
 
     return {
-        "answer": response.text,
+        "answer": response.choices[0].message.content,
         "sources": [
             {
                 "id": result["id"],
