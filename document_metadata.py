@@ -6,7 +6,8 @@ CHAPTERS = (
     (18, 28, "Chapter 2", "Agentic AI Systems"),
     (29, 38, "Chapter 3", "Multi-Agent Systems"),
     (39, 47, "Chapter 4", "Orchestrating Multi-Agent Systems"),
-    (48, 58, "Chapter 5", "Organizational Maturity and Readiness"),
+    (48, 53, "Chapter 5", "Organizational Maturity and Readiness"),
+    (54, 58, "Chapter 6", "Practical Applications of Agentic AI"),
 )
 
 

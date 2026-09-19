@@ -1,5 +1,6 @@
 import pymupdf  # PyMuPDF
 from document_metadata import metadata_for_page, update_section
+from text_cleanup import clean_text
 
 
 PDF_PATH = "Ebook-Agentic-AI.pdf"
@@ -8,6 +9,31 @@ OUTPUT_PATH = "extracted_text_pages_7_58.txt"
 START_PAGE = 7
 END_PAGE = 58
 IGNORED_PAGES = {28, 49}
+
+
+def is_non_educational_block(text, page_number):
+    """Remove recurring layout and explicitly promotional/QR content."""
+    normalized = " ".join(text.split())
+
+    # Repeated book branding and the in-book footer number.
+    if normalized == "AGENTIC AI FOR EXECUTIVES":
+        return True
+    if normalized == str(page_number - 6):
+        return True
+
+    # QR-code calls to action are promotional references, not educational text.
+    if "QR code" in normalized or "Scan the QR" in normalized:
+        return True
+
+    # The Emergence AI material on PDF page 46 is a promotional insert. The
+    # caller handles the remainder of that page after its heading separately.
+    if page_number == 46 and (
+        "Emergence AI" in normalized
+        or normalized.startswith("Leaders in Autonomous Multi-Agent")
+    ):
+        return True
+
+    return False
 
 
 def cell_text(cell):
@@ -80,12 +106,25 @@ def extract_page_text(page):
     text_blocks = page.get_text("blocks", sort=True)
 
     text_parts = []
+    skip_remaining_promotional_content = False
     for block in text_blocks:
         if block_is_inside_table(block, table_rects):
             continue
 
         text = block[4].strip()
-        if text:
+        if not text:
+            continue
+
+        normalized = " ".join(text.split())
+        if page.number == 45 and normalized.startswith(
+            "Leaders in Autonomous Multi-Agent"
+        ):
+            skip_remaining_promotional_content = True
+
+        if skip_remaining_promotional_content:
+            continue
+
+        if not is_non_educational_block(text, page.number + 1):
             text_parts.append(text)
 
     return "\n\n".join(text_parts)
@@ -100,9 +139,10 @@ for page_number in range(START_PAGE, END_PAGE + 1):
         continue
 
     page = doc[page_number - 1]
-    if page_number in {START_PAGE, 18, 29, 39, 48}:
+    if page_number in {START_PAGE, 18, 29, 39, 48, 54}:
         current_section = None
     text = extract_page_text(page)
+    text = clean_text(text, page_number)
     current_section = update_section(current_section, text)
     metadata = metadata_for_page(page_number, current_section)
 

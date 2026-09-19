@@ -4,9 +4,10 @@ from document_metadata import metadata_for_page, update_section
 
 PDF_PATH = "Ebook-Agentic-AI.pdf"
 
-# These pages contain decorative/layout elements that PyMuPDF can mistake for
-# tables. They were explicitly excluded because they need a different method.
-IGNORED_PAGES = {49, 59, 60}
+# Keep both extraction pipelines on the same in-book content range.
+START_PAGE = 7
+END_PAGE = 58
+IGNORED_PAGES = {28, 49}
 
 
 def cell_text(cell):
@@ -50,6 +51,8 @@ table_pages = []
 current_section = None
 
 for page_number, page in enumerate(doc, start=1):
+    if not START_PAGE <= page_number <= END_PAGE:
+        continue
     if page_number in IGNORED_PAGES:
         continue
 
