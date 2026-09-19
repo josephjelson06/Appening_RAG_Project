@@ -3,6 +3,7 @@ from document_metadata import metadata_for_page, update_section
 
 
 PDF_PATH = "Ebook-Agentic-AI.pdf"
+OUTPUT_PATH = "extracted_tables_7_58.txt"
 
 # Keep both extraction pipelines on the same in-book content range.
 START_PAGE = 7
@@ -46,6 +47,56 @@ def is_real_table(data):
     return True
 
 
+COLOR_LABELS = {
+    (0, 116, 186): "Very High",  # blue
+    (70, 184, 102): "High",       # green
+    (252, 213, 61): "Moderate",  # yellow
+    (221, 95, 64): "Initial",    # red
+}
+
+
+def nearest_color_label(fill):
+    if not fill:
+        return None
+
+    rgb = tuple(round(channel * 255) for channel in fill[:3])
+    distances = {
+        label: sum((rgb[i] - color[i]) ** 2 for i in range(3))
+        for color, label in COLOR_LABELS.items()
+    }
+    label, distance = min(distances.items(), key=lambda item: item[1])
+    return label if distance < 5000 else None
+
+
+def extract_table_data(page, table, page_number):
+    """Extract cells and decode the colored readiness matrix on page 52."""
+    data = table.extract()
+
+    if page_number != 52 or len(data) != 6 or len(data[0]) != 7:
+        return data
+
+    row_count = len(data)
+    color_markers = []
+    for drawing in page.get_drawings():
+        label = nearest_color_label(drawing.get("fill"))
+        rect = drawing.get("rect")
+        if label and rect and rect.width < 25 and rect.height < 25:
+            color_markers.append((pymupdf.Rect(rect), label))
+
+    for row_index in range(1, row_count):
+        for column_index in range(1, len(data[row_index])):
+            cell_index = column_index * row_count + row_index
+            cell = pymupdf.Rect(table.cells[cell_index])
+            center = cell.tl + (cell.br - cell.tl) * 0.5
+
+            for marker_rect, label in color_markers:
+                if marker_rect.contains(center):
+                    data[row_index][column_index] = label
+                    break
+
+    return data
+
+
 doc = pymupdf.open(PDF_PATH)
 table_pages = []
 current_section = None
@@ -66,7 +117,7 @@ for page_number, page in enumerate(doc, start=1):
     accepted_table_number = 0
 
     for table in tables.tables:
-        data = table.extract()
+        data = extract_table_data(page, table, page_number)
 
         if not is_real_table(data):
             continue
@@ -96,6 +147,32 @@ for page_number, page in enumerate(doc, start=1):
             }
         )
 
+
+output_lines = []
+
+for table in table_pages:
+    output_lines.extend(
+        [
+            "",
+            "=" * 80,
+            (
+                f"PDF PAGE {table['page_number']} | "
+                f"IN-BOOK PAGE {table['in_book_page']} | "
+                f"{table['chapter']}: {table['chapter_title']} | "
+                f"SECTION {table['section']} | "
+                f"TABLE {table['table_number']}"
+            ),
+            "=" * 80,
+        ]
+    )
+
+    output_lines.extend(str(row) for row in table["data"])
+
+
+with open(OUTPUT_PATH, "w", encoding="utf-8") as output_file:
+    output_file.write("\n".join(output_lines).lstrip() + "\n")
+
+print(f"Saved extracted tables to {OUTPUT_PATH}")
 
 for table in table_pages:
     print("\n" + "=" * 80)

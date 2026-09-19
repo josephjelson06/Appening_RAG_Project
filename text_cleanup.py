@@ -33,6 +33,10 @@ def clean_text(text: str, pdf_page: int) -> str:
 
     # The footer is the in-book page number, which is PDF page minus six.
     in_book_page = pdf_page - 6
-    text = re.sub(rf"(?:\s|^)\s*{in_book_page}\s*$", "", text)
+    text = re.sub(rf"(?:\s|^)\s*0*{in_book_page}\s*$", "", text)
 
-    return re.sub(r"\s+", " ", text).strip()
+    # Preserve the source PDF's paragraphs and section spacing. Only normalize
+    # line-ending style and prevent excessive empty-page gaps.
+    text = text.replace("\r\n", "\n").replace("\r", "\n")
+    text = re.sub(r"\n{4,}", "\n\n\n", text)
+    return text.strip()
