@@ -6,9 +6,10 @@ import re
 from pathlib import Path
 
 
-TEXT_INPUT = Path("extracted_text_pages_7_58.txt")
-TABLE_INPUT = Path("extracted_tables_7_58.txt")
-OUTPUT = Path("chunked_documents.jsonl")
+PROJECT_ROOT = Path(__file__).resolve().parents[1]
+TEXT_INPUT = PROJECT_ROOT / "data" / "processed" / "extracted_text_pages_7_58.txt"
+TABLE_INPUT = PROJECT_ROOT / "data" / "processed" / "extracted_tables_7_58.txt"
+OUTPUT = PROJECT_ROOT / "data" / "processed" / "chunked_documents.jsonl"
 
 MAX_TEXT_CHARS = 2800
 TEXT_OVERLAP_CHARS = 300

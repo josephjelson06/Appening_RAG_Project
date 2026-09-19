@@ -6,7 +6,7 @@ import sys
 from dotenv import load_dotenv
 from google import genai
 
-from retrieve import retrieve
+from .retrieve import retrieve
 
 
 def format_context(results):
@@ -25,7 +25,8 @@ def format_context(results):
 
 
 def answer(question):
-    load_dotenv(".env")
+    project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
+    load_dotenv(os.path.join(project_root, ".env"))
     results = retrieve(question)
 
     if not results:

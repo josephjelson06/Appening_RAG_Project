@@ -10,7 +10,8 @@ from google.genai import types
 from pinecone import Pinecone, ServerlessSpec
 
 
-CHUNKS_PATH = Path("chunked_documents.jsonl")
+PROJECT_ROOT = Path(__file__).resolve().parents[1]
+CHUNKS_PATH = PROJECT_ROOT / "data" / "processed" / "chunked_documents.jsonl"
 
 
 def required(name):
@@ -55,7 +56,7 @@ def ensure_index(pc, index_name, dimension):
 
 
 def main():
-    load_dotenv()
+    load_dotenv(PROJECT_ROOT / ".env")
     chunks = load_chunks()
     if not chunks:
         raise RuntimeError("No chunks found. Run chunk_documents.py first.")

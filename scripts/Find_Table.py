@@ -1,9 +1,16 @@
+import sys
+from pathlib import Path
+
 import pymupdf  # PyMuPDF
-from document_metadata import metadata_for_page, update_section
+
+PROJECT_ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(PROJECT_ROOT / "src"))
+
+from agentic_rag.document_metadata import metadata_for_page, update_section
 
 
-PDF_PATH = "Ebook-Agentic-AI.pdf"
-OUTPUT_PATH = "extracted_tables_7_58.txt"
+PDF_PATH = PROJECT_ROOT / "data" / "raw" / "Ebook-Agentic-AI.pdf"
+OUTPUT_PATH = PROJECT_ROOT / "data" / "processed" / "extracted_tables_7_58.txt"
 
 # Keep both extraction pipelines on the same in-book content range.
 START_PAGE = 7

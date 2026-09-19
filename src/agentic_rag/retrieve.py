@@ -27,7 +27,8 @@ def embed_query(client, query):
 
 
 def retrieve(query):
-    load_dotenv(".env")
+    project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
+    load_dotenv(os.path.join(project_root, ".env"))
 
     google_client = genai.Client(api_key=required("GOOGLE_API_KEY"))
     pinecone = Pinecone(api_key=required("PINECONE_API_KEY"))
