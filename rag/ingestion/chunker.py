@@ -178,9 +178,16 @@ def build_chunks():
     return chunks
 
 
-if __name__ == "__main__":
-    chunks = build_chunks()
-    with OUTPUT.open("w", encoding="utf-8") as output_file:
+def write_chunks(chunks, output: Path = OUTPUT):
+    """Write chunk records as JSON Lines and return the output path."""
+    output.parent.mkdir(parents=True, exist_ok=True)
+    with output.open("w", encoding="utf-8") as output_file:
         for chunk in chunks:
             output_file.write(json.dumps(chunk, ensure_ascii=False) + "\n")
+    return output
+
+
+if __name__ == "__main__":
+    chunks = build_chunks()
+    write_chunks(chunks)
     print(f"Wrote {len(chunks)} chunks to {OUTPUT}")

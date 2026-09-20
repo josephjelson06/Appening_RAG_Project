@@ -2,18 +2,13 @@
 
 import json
 import re
-import sys
-from pathlib import Path
 
-PROJECT_ROOT = Path(__file__).resolve().parents[1]
-sys.path.insert(0, str(PROJECT_ROOT / "src"))
-
-from agentic_rag.generation.generator import answer
+from rag.config import PATHS
+from rag.generation.generator import answer
 
 
-QUESTIONS_PATH = PROJECT_ROOT / "evaluation" / "questions.json"
-REPORT_PATH = PROJECT_ROOT / "evaluation" / "outputs" / "generation_report.json"
-
+QUESTIONS_PATH = PATHS.evaluation_dir / "questions.json"
+REPORT_PATH = PATHS.evaluation_outputs_dir / "generation_report.json"
 
 ALIASES = {
     "autonomous decision-making": ["autonom", "independent decision"],
@@ -54,10 +49,10 @@ def evaluate_item(item):
             "refusal_detected": False,
             "sources": [],
         }
+
     answer_text = result["answer"] or ""
     points = item.get("answer_points", [])
     supported_points = [point for point in points if point_supported(answer_text, point)]
-
     refusal_text = normalized(answer_text)
     refusal = any(
         phrase in refusal_text
@@ -76,9 +71,7 @@ def evaluate_item(item):
         "answerable": item["answerable"],
         "answer": answer_text,
         "supported_answer_points": supported_points,
-        "answer_point_coverage": (
-            len(supported_points) / len(points) if points else None
-        ),
+        "answer_point_coverage": len(supported_points) / len(points) if points else None,
         "refusal_detected": refusal,
         "sources": result["sources"],
     }
@@ -103,9 +96,7 @@ def main():
     report = {
         "total_questions": len(results),
         "answerable_questions": len(answerable),
-        "average_answer_point_coverage": (
-            sum(coverage_values) / len(coverage_values) if coverage_values else 0
-        ),
+        "average_answer_point_coverage": sum(coverage_values) / len(coverage_values) if coverage_values else 0,
         "unanswerable_refusal_rate": (
             sum(item["refusal_detected"] for item in unanswerable) / len(unanswerable)
             if unanswerable
@@ -114,6 +105,7 @@ def main():
         "manual_review_required": True,
         "results": results,
     }
+    REPORT_PATH.parent.mkdir(parents=True, exist_ok=True)
     REPORT_PATH.write_text(json.dumps(report, indent=2, ensure_ascii=False), encoding="utf-8")
     print(json.dumps({key: value for key, value in report.items() if key != "results"}, indent=2))
     print(f"Saved report to {REPORT_PATH}")

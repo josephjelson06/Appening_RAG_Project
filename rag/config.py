@@ -7,7 +7,7 @@ from pathlib import Path
 from dotenv import load_dotenv
 
 
-PROJECT_ROOT = Path(__file__).resolve().parents[2]
+PROJECT_ROOT = Path(__file__).resolve().parents[1]
 load_dotenv(PROJECT_ROOT / ".env")
 
 
@@ -19,7 +19,8 @@ class ProjectPaths:
     chunks_file: Path = PROJECT_ROOT / "data" / "artifacts" / "03_chunked" / "chunks.jsonl"
     index_manifest_dir: Path = PROJECT_ROOT / "data" / "artifacts" / "04_index_manifest"
     evaluation_dir: Path = PROJECT_ROOT / "evaluation"
-    evaluation_outputs_dir: Path = PROJECT_ROOT / "evaluation" / "outputs"
+    evaluation_results_dir: Path = PROJECT_ROOT / "data" / "evaluation_results"
+    evaluation_outputs_dir: Path = evaluation_results_dir / "outputs"
 
 
 PATHS = ProjectPaths()

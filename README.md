@@ -1,77 +1,91 @@
 # Agentic AI Book RAG
 
-A Python RAG chatbot grounded strictly in the *Agentic AI for Executives*
-ebook. The project uses PyMuPDF for extraction, Gemini for embeddings, Pinecone
-for vector search, Groq for generation, LangGraph for orchestration, FastAPI
-for the API, and Streamlit for the UI.
+A Python RAG application grounded in the *Agentic AI for Executives* ebook.
+The system uses PyMuPDF for extraction, Gemini embeddings, Pinecone for vector
+search, Groq for generation, LangGraph for orchestration, FastAPI for the API,
+and Streamlit for the user interface.
 
 ## Architecture
 
 ```text
-Source PDF
-   |
-   v
-Numbered ingestion pipeline
-   |-- extract text and tables
-   |-- clean artifacts
-   |-- build provenance-aware chunks
-   |-- embed and index in Pinecone
-   |
-   v
-LangGraph RAG workflow
-   |-- retrieve
-   |-- generate
-   |-- validate
-   |
-   v
-FastAPI (/retrieve, /generate)
-   |
-   v
-Streamlit UI
+PDF
+ |
+ +--> page-text extractor --> cleaner --+
+ |                                      |
+ +--> table extractor ------------------+--> chunker --> Gemini --> Pinecone
+                                                               |
+                                                               v
+                         FastAPI <-- LangGraph: retrieve -> generate -> validate
+                            ^
+                            |
+                       Streamlit UI
 ```
+
+The page and table extractors are deliberately separate. Page extraction
+removes accepted table regions so table content is not duplicated in text
+chunks. Table extraction preserves rows, table numbers, color-coded readiness
+labels, and source metadata.
 
 ## Repository layout
 
 ```text
-data/raw/                          source PDF
-data/artifacts/02_cleaned/         cleaned text/table artifacts
-data/artifacts/03_chunked/         final chunks.jsonl
-data/artifacts/04_index_manifest/  Pinecone indexing manifest
-src/agentic_rag/                   reusable application modules
-scripts/                           numbered pipeline and run commands
-evaluation/                        question set and generated reports
-ui/                                Streamlit client and instructions
-```
+run_pipeline.py             build the complete RAG index
+run_server.py               start the FastAPI application
 
-The extraction scripts write the cleaned extraction artifacts directly to
-`data/artifacts/02_cleaned/`; the empty `01_extracted` stage is intentionally
-not required for this PDF because the source-specific extraction and cleanup
-are performed together.
+rag/                        reusable application package
+  config.py                 project paths and environment settings
+  ingestion/
+    extractor.py            separate page and table extraction functions
+    cleaner.py              source-specific cleanup rules
+    chunker.py              provenance-aware text/table chunks
+    metadata.py             chapter, section, and page metadata
+    indexer.py              embeddings and Pinecone upsert
+  retrieval/retriever.py   Pinecone retrieval
+  generation/generator.py  public generation entry point
+  workflow/rag_graph.py    LangGraph workflow
+  api/
+    app.py                 FastAPI application
+    routes.py              HTTP route handlers
+    schemas.py             request/response models
+
+evaluation/                 evaluation code and question set
+scripts/                    optional evaluation command wrappers
+ui/                         Streamlit client
+data/raw/                   source PDF
+data/artifacts/             extraction and chunking outputs
+data/evaluation_results/    evaluation JSON and Markdown reports
+tests/                      space for automated tests
+```
 
 ## Setup
 
-Use the project virtual environment:
+From the repository root:
 
 ```powershell
-.\myenv\Scripts\activate
+python -m venv .venv
+.\.venv\Scripts\activate
 python -m pip install -r requirements.txt
+copy .env.example .env
 ```
 
-Copy `.env.example` to `.env` and provide valid credentials. Never commit
-`.env` or API keys.
+Fill `.env` with valid credentials. Never commit `.env` or API keys.
 
 Required provider settings include:
 
 ```text
-GOOGLE_API_KEY       Gemini embedding access
-EMBEDDING_MODEL      gemini-embedding-001
-EMBEDDING_DIMENSION  3072
-PINECONE_API_KEY     Pinecone access
-GROQ_API_KEY         Groq generation access
-GENERATION_MODEL     qwen/qwen3.8-27b
+GOOGLE_API_KEY
+EMBEDDING_MODEL=gemini-embedding-001
+EMBEDDING_DIMENSION=3072
+PINECONE_API_KEY
+PINECONE_INDEX_NAME=agentic-ai-book
+PINECONE_NAMESPACE=agentic-ai-book
+PINECONE_CLOUD=aws
+PINECONE_REGION=us-east-1
+GROQ_API_KEY
+GENERATION_MODEL=qwen/qwen3.8-27b
 ```
 
-## Part 1: ingestion and indexing
+## 1. Build the RAG index
 
 Place the source book at:
 
@@ -79,38 +93,37 @@ Place the source book at:
 data/raw/Ebook-Agentic-AI.pdf
 ```
 
-Run the complete pipeline with one command:
+Run one command:
 
 ```powershell
-python .\scripts\01_run_ingestion.py
+python .\run_pipeline.py
 ```
 
-The steps run in this order:
+This executes, in order:
 
-```text
-01_extract_pages.py
-02_extract_tables.py
-03_build_chunks.py
-04_index_pinecone.py
-```
+1. page-text extraction and cleanup;
+2. table extraction and color-label decoding;
+3. structure-aware chunk creation;
+4. embedding and Pinecone indexing.
 
-Inspect the resulting artifacts under `data/artifacts/`.
+Inspect local artifacts under `data/artifacts/`. The Pinecone index manifest is
+written to `data/artifacts/04_index_manifest/` after a successful indexing run.
 
-## Part 2: API and UI
+## 2. Run the application
 
-Start the API:
+Start FastAPI:
 
 ```powershell
-python .\scripts\03_run_api.py
+python .\run_server.py
 ```
 
-Swagger is available at:
+Swagger documentation:
 
 ```text
 http://127.0.0.1:18000/docs
 ```
 
-The main routes are:
+Routes:
 
 ```text
 GET  /health
@@ -118,36 +131,41 @@ POST /retrieve
 POST /generate
 ```
 
-Start Streamlit in a second terminal:
+In a second terminal, start Streamlit:
 
 ```powershell
-python .\scripts\04_run_streamlit.py
+streamlit run ui/streamlit_app.py
 ```
 
-The UI defaults to the local API URL above. Set `RAG_API_URL` first only when
-the API is running at a different address.
+The UI defaults to `http://127.0.0.1:18000`. Set `RAG_API_URL` in `.env` or
+the terminal if the API runs elsewhere.
 
-See [ui/README.md](ui/README.md) for UI-specific instructions.
+## 3. Evaluate the system
 
-## Part 3: evaluation
-
-Run retrieval and generation evaluation in sequence:
+Run the complete evaluation:
 
 ```powershell
-python .\scripts\02_run_evaluation.py
+python .\scripts\run_evaluation.py
+```
+
+Run individual evaluations when needed:
+
+```powershell
+python .\scripts\evaluate_retrieval.py
+python .\scripts\evaluate_generation.py
 ```
 
 Reports are written to:
 
 ```text
-evaluation/outputs/retrieval_report.json
-evaluation/outputs/generation_report.json
-evaluation/outputs/evaluation_report.md
+data/evaluation_results/outputs/retrieval_report.json
+data/evaluation_results/outputs/generation_report.json
+data/evaluation_results/outputs/evaluation_report.md
 ```
 
-The retrieval score is a Pinecone vector similarity score, not an LLM
-confidence probability. Answer-point coverage is a transparent heuristic and
-does not replace manual factuality review.
+The retrieval score is a Pinecone similarity score, not a calibrated confidence
+probability. Answer-point coverage is a transparent heuristic and does not
+replace manual factuality review.
 
 ## Sample questions
 
@@ -158,11 +176,9 @@ does not replace manual factuality review.
 - What challenges affect multi-agent systems?
 - What parameters assess organizational readiness for Agentic AI?
 
-## Current limitations
+## Limitations
 
-- Retrieval and generation depend on external Gemini, Pinecone, and Groq APIs.
-- The `grounded` field is a lightweight citation/evidence signal, not a formal
-  factuality guarantee.
-- Some PDF pages contain multiple sections, so page-level provenance can be
-  less precise than chunk-level content.
-- Evaluation reports must be manually reviewed before making production claims.
+- External Gemini, Pinecone, and Groq services are required for live operation.
+- Generated answers are model outputs and should be reviewed with their source chunks.
+- Page-level provenance can be broader than section-level content when a page contains multiple sections.
+- Evaluation reports are diagnostic evidence, not a guarantee of production quality.

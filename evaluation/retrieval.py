@@ -1,17 +1,13 @@
-"""Evaluate Pinecone retrieval against manually verified expected evidence."""
+"""Evaluate Pinecone retrieval against manually verified evidence."""
 
 import json
-import sys
-from pathlib import Path
 
-PROJECT_ROOT = Path(__file__).resolve().parents[1]
-sys.path.insert(0, str(PROJECT_ROOT / "src"))
-
-from agentic_rag.retrieval.retriever import retrieve
+from rag.config import PATHS
+from rag.retrieval.retriever import retrieve
 
 
-QUESTIONS_PATH = PROJECT_ROOT / "evaluation" / "questions.json"
-REPORT_PATH = PROJECT_ROOT / "evaluation" / "outputs" / "retrieval_report.json"
+QUESTIONS_PATH = PATHS.evaluation_dir / "questions.json"
+REPORT_PATH = PATHS.evaluation_outputs_dir / "retrieval_report.json"
 
 
 def evaluate_question(item):
@@ -46,9 +42,7 @@ def evaluate_question(item):
 
     relevant = [hit for hit in hits if hit["relevant"]]
     page_relevant = [hit for hit in hits if hit["page_hit"]]
-    evidence_relevant = [
-        hit for hit in hits if hit["page_hit"] and hit["type_hit"]
-    ]
+    evidence_relevant = [hit for hit in hits if hit["page_hit"] and hit["type_hit"]]
     return {
         "id": item["id"],
         "question": item["question"],
@@ -84,6 +78,7 @@ def main():
         "answerable_top_result_accuracy": top_hits / len(answerable) if answerable else 0,
         "results": report,
     }
+    REPORT_PATH.parent.mkdir(parents=True, exist_ok=True)
     REPORT_PATH.write_text(json.dumps(summary, indent=2), encoding="utf-8")
     print(json.dumps({key: value for key, value in summary.items() if key != "results"}, indent=2))
     print(f"Saved report to {REPORT_PATH}")

@@ -1,6 +1,6 @@
 # Evaluation Report
 
-Generated: 2026-09-20T12:35:03.935339+00:00
+Generated: 2026-09-20T13:37:10.156572+00:00
 
 This report summarizes the current fixed-question evaluation set. The JSON files beside this report contain per-question evidence and sources.
 

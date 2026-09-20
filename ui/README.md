@@ -1,14 +1,14 @@
 # Streamlit UI
 
-The Streamlit app is a thin client of the FastAPI service. It does not call
-Pinecone, Gemini, or Groq directly.
+The Streamlit app is a thin client of FastAPI. It does not call Pinecone,
+Gemini, or Groq directly.
 
 ## Start the API first
 
 From the repository root:
 
 ```powershell
-python .\scripts\03_run_api.py
+python .\run_server.py
 ```
 
 The default API URL is:
@@ -22,7 +22,7 @@ http://127.0.0.1:18000
 Open a second terminal:
 
 ```powershell
-python .\scripts\04_run_streamlit.py
+streamlit run ui/streamlit_app.py
 ```
 
 The app reads `RAG_API_URL` from `.env` when present and otherwise uses the
