@@ -9,6 +9,13 @@ This README is the starting point for a fresh clone. The smaller guides in
 `evaluation/`, `ui/`, and the artifact folders provide focused details after
 the main setup is complete.
 
+For a complete onboarding walkthrough, read the guides in [`docs/`](docs/):
+
+- [Quick Start](docs/QUICKSTART.md) — environment, ingestion, API, UI, and evaluation setup.
+- [Prompt and Question Catalog](docs/PROMPTS_AND_QUESTIONS.md) — supported, unsupported, page, and table prompts.
+- [Preprocessing Decisions](docs/PREPROCESSING_DECISIONS.md) — cleaning, exclusions, and table transformations.
+- [Technical Methods](docs/TECHNICAL_METHODS.md) — extraction, chunking, embeddings, retrieval, LangGraph, and evaluation.
+
 ## Architecture
 
 ```text
