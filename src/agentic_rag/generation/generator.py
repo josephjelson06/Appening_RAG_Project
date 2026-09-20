@@ -2,7 +2,7 @@
 
 import sys
 
-from .graph import run_rag_graph
+from ..workflow.rag_graph import run_rag_graph
 
 
 def answer(question):
@@ -13,7 +13,7 @@ if __name__ == "__main__":
     sys.stdout.reconfigure(encoding="utf-8")
     question = " ".join(sys.argv[1:]).strip()
     if not question:
-        raise SystemExit('Usage: python -m agentic_rag.ask "your question"')
+        raise SystemExit('Usage: python -m agentic_rag.generation.generator "your question"')
 
     result = answer(question)
     print(result["answer"])

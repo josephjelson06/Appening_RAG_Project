@@ -8,20 +8,16 @@ Run from the project root after Pinecone and the embedding configuration are
 available:
 
 ```powershell
-$env:PYTHONPATH = "$(Get-Location)\src"
-python .\scripts\evaluate_retrieval.py
+python .\scripts\02_run_evaluation.py
 ```
 
-The report is written to `evaluation/retrieval_report.json`.
+Reports are written to `evaluation/outputs/`.
 
 ## Generation evaluation
 
 After retrieval evaluation, run the full RAG answer path:
 
-```powershell
-$env:PYTHONPATH = "$(Get-Location)\src"
-python .\scripts\evaluate_generation.py
-```
+Generation evaluation is included in `02_run_evaluation.py`.
 
 This writes `generation_report.json`. The answer-point coverage and refusal
 rate are heuristics; every generated answer should still be manually reviewed

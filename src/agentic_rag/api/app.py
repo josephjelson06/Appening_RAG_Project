@@ -3,8 +3,8 @@
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel, Field
 
-from .ask import answer
-from .retrieve import retrieve
+from ..generation.generator import answer
+from ..retrieval.retriever import retrieve
 
 
 app = FastAPI(

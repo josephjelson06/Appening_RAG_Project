@@ -7,7 +7,7 @@ from dotenv import load_dotenv
 from groq import Groq
 from langgraph.graph import END, START, StateGraph
 
-from .retrieve import retrieve
+from ..retrieval.retriever import retrieve
 
 
 class RAGState(TypedDict, total=False):

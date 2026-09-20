@@ -7,11 +7,11 @@ from pathlib import Path
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(PROJECT_ROOT / "src"))
 
-from agentic_rag.retrieve import retrieve
+from agentic_rag.retrieval.retriever import retrieve
 
 
 QUESTIONS_PATH = PROJECT_ROOT / "evaluation" / "questions.json"
-REPORT_PATH = PROJECT_ROOT / "evaluation" / "retrieval_report.json"
+REPORT_PATH = PROJECT_ROOT / "evaluation" / "outputs" / "retrieval_report.json"
 
 
 def evaluate_question(item):

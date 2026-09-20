@@ -8,11 +8,11 @@ from pathlib import Path
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(PROJECT_ROOT / "src"))
 
-from agentic_rag.ask import answer
+from agentic_rag.generation.generator import answer
 
 
 QUESTIONS_PATH = PROJECT_ROOT / "evaluation" / "questions.json"
-REPORT_PATH = PROJECT_ROOT / "evaluation" / "generation_report.json"
+REPORT_PATH = PROJECT_ROOT / "evaluation" / "outputs" / "generation_report.json"
 
 
 ALIASES = {

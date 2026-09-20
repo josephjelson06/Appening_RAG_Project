@@ -11,7 +11,7 @@ from pinecone import Pinecone, ServerlessSpec
 
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
-CHUNKS_PATH = PROJECT_ROOT / "data" / "processed" / "chunked_documents.jsonl"
+CHUNKS_PATH = PROJECT_ROOT / "data" / "artifacts" / "03_chunked" / "chunks.jsonl"
 
 
 def required(name):
