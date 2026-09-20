@@ -41,6 +41,8 @@ class GenerationResponse(BaseModel):
     question: str
     answer: str
     sources: list[SourceReference]
+    grounded: bool
+    validation_note: str
 
 
 @app.get("/health")
@@ -73,4 +75,6 @@ def generate_route(request: QueryRequest):
         "question": request.question,
         "answer": result["answer"],
         "sources": result["sources"],
+        "grounded": result["grounded"],
+        "validation_note": result["validation_note"],
     }

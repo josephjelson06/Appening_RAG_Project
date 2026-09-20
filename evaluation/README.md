@@ -26,3 +26,14 @@ python .\scripts\evaluate_generation.py
 This writes `generation_report.json`. The answer-point coverage and refusal
 rate are heuristics; every generated answer should still be manually reviewed
 for factual accuracy, grounding, and citation correctness.
+
+## LangGraph workflow
+
+The generation path is implemented as a compiled graph:
+
+```text
+START -> retrieve -> generate -> validate -> END
+```
+
+The validation result is returned by the API as `grounded` and
+`validation_note`.
