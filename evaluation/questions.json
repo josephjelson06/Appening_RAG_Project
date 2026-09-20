@@ -1,0 +1,124 @@
+[
+  {
+    "id": "q01",
+    "question": "What is Agentic AI?",
+    "answerable": true,
+    "expected_pdf_pages": [7, 8, 9],
+    "expected_content_types": ["text"],
+    "answer_points": ["autonomous decision-making", "acts toward goals", "proactive behavior"]
+  },
+  {
+    "id": "q02",
+    "question": "How does Agentic AI differ from other AI systems?",
+    "answerable": true,
+    "expected_pdf_pages": [11],
+    "expected_sections": ["1.2"],
+    "answer_points": ["acts autonomously", "impact-focused", "proactive and adaptive"]
+  },
+  {
+    "id": "q03",
+    "question": "What are the capabilities of Agentic AI?",
+    "answerable": true,
+    "expected_pdf_pages": [12],
+    "expected_sections": ["1.3"],
+    "answer_points": ["autonomy", "decision-making", "adaptability", "language understanding", "workflow optimization"]
+  },
+  {
+    "id": "q04",
+    "question": "What value does Agentic AI create for organizations?",
+    "answerable": true,
+    "expected_pdf_pages": [12, 13],
+    "expected_sections": ["1.4"],
+    "answer_points": ["operational efficiency", "real-time decision-making", "customer service", "personalization"]
+  },
+  {
+    "id": "q05",
+    "question": "What are examples of Agentic AI use cases?",
+    "answerable": true,
+    "expected_pdf_pages": [14, 15, 16],
+    "expected_sections": ["1.5"],
+    "answer_points": ["retail", "manufacturing", "healthcare"]
+  },
+  {
+    "id": "q06",
+    "question": "What are the core pillars of an Agentic AI system?",
+    "answerable": true,
+    "expected_pdf_pages": [19],
+    "expected_sections": ["2.1"],
+    "answer_points": ["perception", "reasoning", "planning", "action"]
+  },
+  {
+    "id": "q07",
+    "question": "What are the building blocks of an Agentic AI system?",
+    "answerable": true,
+    "expected_pdf_pages": [20],
+    "expected_sections": ["2.2"],
+    "answer_points": ["environment", "agent", "tools", "memory"]
+  },
+  {
+    "id": "q08",
+    "question": "What are the defining characteristics of an agent?",
+    "answerable": true,
+    "expected_pdf_pages": [21, 22],
+    "expected_sections": ["2.3"],
+    "answer_points": ["autonomy", "reactivity", "proactivity", "social ability"]
+  },
+  {
+    "id": "q09",
+    "question": "What are the types of atomic agents?",
+    "answerable": true,
+    "expected_pdf_pages": [25],
+    "expected_sections": ["2.5"],
+    "expected_content_types": ["table"],
+    "answer_points": ["foundational agents", "workflow agents", "utility agents"]
+  },
+  {
+    "id": "q10",
+    "question": "What industries are discussed as applications for Agentic AI?",
+    "answerable": true,
+    "expected_pdf_pages": [26, 27],
+    "expected_sections": ["2.6"],
+    "answer_points": ["healthcare", "finance", "retail", "education", "manufacturing"]
+  },
+  {
+    "id": "q11",
+    "question": "What are the structural layers in a multi-agent system?",
+    "answerable": true,
+    "expected_pdf_pages": [31, 32],
+    "expected_sections": ["3.1"],
+    "answer_points": ["agent layer", "communication layer", "orchestration layer"]
+  },
+  {
+    "id": "q12",
+    "question": "What challenges and mitigation strategies are described for multi-agent systems?",
+    "answerable": true,
+    "expected_pdf_pages": [36],
+    "expected_sections": ["3.4"],
+    "expected_content_types": ["table"],
+    "answer_points": ["complex system design", "interoperability", "data security", "scalability"]
+  },
+  {
+    "id": "q13",
+    "question": "What are the key aspects of orchestrating multi-agent systems?",
+    "answerable": true,
+    "expected_pdf_pages": [40, 41],
+    "expected_sections": ["4.2"],
+    "answer_points": ["communication mechanisms", "coordination", "task allocation"]
+  },
+  {
+    "id": "q14",
+    "question": "What parameters are used to assess organizational readiness for Agentic AI?",
+    "answerable": true,
+    "expected_pdf_pages": [50, 52],
+    "expected_sections": ["B.", "D."],
+    "expected_content_types": ["table"],
+    "answer_points": ["data maturity", "technology infrastructure", "talent availability", "regulatory adaptability"]
+  },
+  {
+    "id": "q15",
+    "question": "What does the book say about quantum computing in Agentic AI?",
+    "answerable": false,
+    "expected_pdf_pages": [],
+    "answer_points": []
+  }
+]
