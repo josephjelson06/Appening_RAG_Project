@@ -3,7 +3,6 @@
 import os
 from typing import Any, TypedDict
 
-from dotenv import load_dotenv
 from groq import Groq
 from langgraph.graph import END, START, StateGraph
 
@@ -58,8 +57,6 @@ Question:
 Book excerpts:
 {format_context(results)}
 """
-    project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
-    load_dotenv(os.path.join(project_root, ".env"))
     client = Groq(api_key=os.environ["GROQ_API_KEY"])
     response = client.chat.completions.create(
         model=os.environ.get("GENERATION_MODEL", "qwen/qwen3.8-27b"),

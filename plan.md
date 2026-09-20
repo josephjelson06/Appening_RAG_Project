@@ -333,13 +333,13 @@ We should eliminate:
 - Ambiguous names such as `ask.py`
 - Mixed naming styles such as `Find_Table.py` and `Extract_Page.py`
 
-Use consistent lowercase module names:
+Use consistent lowercase module names and numbered runners:
 
 ```text
-extract_pages.py
-find_tables.py
-chunk_documents.py
-pinecone_ingest.py
+01_extract_pages.py
+02_extract_tables.py
+03_build_chunks.py
+04_index_pinecone.py
 ```
 
 ## What should not be changed unnecessarily

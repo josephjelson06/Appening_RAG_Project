@@ -6,11 +6,12 @@ import pymupdf  # PyMuPDF
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(PROJECT_ROOT / "src"))
 
+from agentic_rag.config import PATHS
 from agentic_rag.ingestion.metadata import metadata_for_page, update_section
 
 
-PDF_PATH = PROJECT_ROOT / "data" / "raw" / "Ebook-Agentic-AI.pdf"
-OUTPUT_PATH = PROJECT_ROOT / "data" / "artifacts" / "02_cleaned" / "cleaned_tables_7_58.txt"
+PDF_PATH = PATHS.source_pdf
+OUTPUT_PATH = PATHS.cleaned_dir / "cleaned_tables_7_58.txt"
 
 # Keep both extraction pipelines on the same in-book content range.
 START_PAGE = 7
@@ -176,6 +177,7 @@ for table in table_pages:
     output_lines.extend(str(row) for row in table["data"])
 
 
+OUTPUT_PATH.parent.mkdir(parents=True, exist_ok=True)
 with open(OUTPUT_PATH, "w", encoding="utf-8") as output_file:
     output_file.write("\n".join(output_lines).lstrip() + "\n")
 

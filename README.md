@@ -34,7 +34,6 @@ Streamlit UI
 
 ```text
 data/raw/                          source PDF
-data/artifacts/01_extracted/      extraction-stage artifacts
 data/artifacts/02_cleaned/         cleaned text/table artifacts
 data/artifacts/03_chunked/         final chunks.jsonl
 data/artifacts/04_index_manifest/  Pinecone indexing manifest
@@ -42,8 +41,12 @@ src/agentic_rag/                   reusable application modules
 scripts/                           numbered pipeline and run commands
 evaluation/                        question set and generated reports
 ui/                                Streamlit client and instructions
-tests/                             automated tests
 ```
+
+The extraction scripts write the cleaned extraction artifacts directly to
+`data/artifacts/02_cleaned/`; the empty `01_extracted` stage is intentionally
+not required for this PDF because the source-specific extraction and cleanup
+are performed together.
 
 ## Setup
 
@@ -118,9 +121,11 @@ POST /generate
 Start Streamlit in a second terminal:
 
 ```powershell
-$env:RAG_API_URL = "http://127.0.0.1:18000"
 python .\scripts\04_run_streamlit.py
 ```
+
+The UI defaults to the local API URL above. Set `RAG_API_URL` first only when
+the API is running at a different address.
 
 See [ui/README.md](ui/README.md) for UI-specific instructions.
 

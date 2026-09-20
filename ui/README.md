@@ -22,9 +22,11 @@ http://127.0.0.1:18000
 Open a second terminal:
 
 ```powershell
-$env:RAG_API_URL = "http://127.0.0.1:18000"
 python .\scripts\04_run_streamlit.py
 ```
+
+The app reads `RAG_API_URL` from `.env` when present and otherwise uses the
+default local API URL. Override it in the terminal for a different API host.
 
 Open the URL printed by Streamlit, normally `http://localhost:8501`.
 

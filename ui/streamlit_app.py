@@ -1,14 +1,19 @@
 """Streamlit client for the Agentic AI Book RAG API."""
 
 import os
+from pathlib import Path
 
 import requests
 import streamlit as st
+from dotenv import load_dotenv
 
 
-DEFAULT_API_URL = os.getenv("RAG_API_URL", "http://127.0.0.1:8000")
+PROJECT_ROOT = Path(__file__).resolve().parents[1]
+load_dotenv(PROJECT_ROOT / ".env")
 
-st.set_page_config(page_title="Agentic AI Book Assistant", page_icon="📘", layout="wide")
+DEFAULT_API_URL = os.getenv("RAG_API_URL", "http://127.0.0.1:18000")
+
+st.set_page_config(page_title="Agentic AI Book Assistant", layout="wide")
 st.title("Agentic AI Book Assistant")
 st.caption("Ask questions about the Agentic AI for Executives book.")
 

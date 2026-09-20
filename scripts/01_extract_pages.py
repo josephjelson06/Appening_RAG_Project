@@ -6,12 +6,13 @@ import pymupdf  # PyMuPDF
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(PROJECT_ROOT / "src"))
 
+from agentic_rag.config import PATHS
 from agentic_rag.ingestion.metadata import metadata_for_page, update_section
 from agentic_rag.ingestion.cleaner import clean_text
 
 
-PDF_PATH = PROJECT_ROOT / "data" / "raw" / "Ebook-Agentic-AI.pdf"
-OUTPUT_PATH = PROJECT_ROOT / "data" / "artifacts" / "02_cleaned" / "cleaned_text_pages_7_58.txt"
+PDF_PATH = PATHS.source_pdf
+OUTPUT_PATH = PATHS.cleaned_dir / "cleaned_text_pages_7_58.txt"
 
 START_PAGE = 7
 END_PAGE = 58
@@ -163,6 +164,7 @@ for page_number in range(START_PAGE, END_PAGE + 1):
     )
 
 
+OUTPUT_PATH.parent.mkdir(parents=True, exist_ok=True)
 with open(OUTPUT_PATH, "w", encoding="utf-8") as output_file:
     output_file.write("\n\n".join(page_outputs))
 

@@ -2,10 +2,11 @@
 
 import os
 
-from dotenv import load_dotenv
 from google import genai
 from google.genai import types
 from pinecone import Pinecone
+
+from ..config import env_float, env_int
 
 
 def required(name):
@@ -20,16 +21,13 @@ def embed_query(client, query):
         model=required("EMBEDDING_MODEL"),
         contents=query,
         config=types.EmbedContentConfig(
-            output_dimensionality=int(os.getenv("EMBEDDING_DIMENSION", "3072")),
+            output_dimensionality=env_int("EMBEDDING_DIMENSION", 3072),
         ),
     )
     return response.embeddings[0].values
 
 
 def retrieve(query):
-    project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
-    load_dotenv(os.path.join(project_root, ".env"))
-
     google_client = genai.Client(api_key=required("GOOGLE_API_KEY"))
     pinecone = Pinecone(api_key=required("PINECONE_API_KEY"))
     index = pinecone.Index(required("PINECONE_INDEX_NAME"))
@@ -37,12 +35,12 @@ def retrieve(query):
     response = index.query(
         namespace=os.getenv("PINECONE_NAMESPACE", "agentic-ai-book"),
         vector=embed_query(google_client, query),
-        top_k=int(os.getenv("TOP_K", "5")),
+        top_k=env_int("TOP_K", 5),
         include_metadata=True,
         include_values=False,
     )
 
-    threshold = float(os.getenv("RELEVANCE_THRESHOLD", "0.35"))
+    threshold = env_float("RELEVANCE_THRESHOLD", 0.35)
     matches = []
     for match in response.matches:
         score = float(match.score or 0)
