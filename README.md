@@ -74,7 +74,7 @@ tests/                      space for automated tests
 Clone the repository and enter its root directory:
 
 ```powershell
-git clone <repository-url> Appening_RAG_Project
+git clone https://github.com/josephjelson06/Appening_RAG_Project.git
 cd Appening_RAG_Project
 ```
 
