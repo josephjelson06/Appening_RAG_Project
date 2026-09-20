@@ -65,7 +65,6 @@ ui/                         Streamlit client
 data/raw/                   source PDF
 data/artifacts/             extraction and chunking outputs
 data/evaluation_results/    evaluation JSON and Markdown reports
-tests/                      space for automated tests
 ```
 
 ## Setup
